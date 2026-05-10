@@ -1,0 +1,38 @@
+{
+  "name": "forgepad-agent",
+  "version": "0.1.0",
+  "description": "ForgePad desktop agent for secure Android-to-desktop coding sessions.",
+  "license": "MIT",
+  "private": false,
+  "type": "module",
+  "bin": {
+    "forgepad": "dist/index.js"
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE",
+    "package.json"
+  ],
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "dev": "node --watch dist/index.js",
+    "start": "node dist/index.js",
+    "prepublishOnly": "npm run build"
+  },
+  "keywords": [
+    "forgepad",
+    "mobile-ide",
+    "android",
+    "desktop-agent",
+    "ai-coding"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "@types/node": "^24.0.0",
+    "typescript": "^5.9.2"
+  }
+}
