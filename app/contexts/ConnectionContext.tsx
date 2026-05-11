@@ -38,6 +38,16 @@ function getAgentBaseUrl(pairUrl: URL) {
   return `${pairUrl.protocol}//${pairUrl.host}`;
 }
 
+function toPairingError(error: unknown) {
+  if (error instanceof Error && error.message === "Network request failed") {
+    return new Error(
+      "Could not reach the desktop agent. On Android release builds, this usually means LAN HTTP traffic is blocked or the phone cannot reach your computer on the same Wi-Fi."
+    );
+  }
+
+  return error instanceof Error ? error : new Error("Pairing failed");
+}
+
 export function ConnectionProvider({ children }: { children: ReactNode }) {
   const [status, setStatus] = useState<ConnectionStatus>("idle");
   const [session, setSession] = useState<SessionInfo | null>(null);
@@ -90,7 +100,7 @@ export function ConnectionProvider({ children }: { children: ReactNode }) {
       setStatus("connected");
     } catch (error) {
       setStatus("idle");
-      throw error;
+      throw toPairingError(error);
     }
   }
 

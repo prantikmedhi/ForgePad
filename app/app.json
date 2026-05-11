@@ -11,7 +11,8 @@
       "versionCode": 1
     },
     "plugins": [
-      "expo-router"
+      "expo-router",
+      "./config-plugins/withAndroidLanCleartext"
     ],
     "experiments": {
       "typedRoutes": true
