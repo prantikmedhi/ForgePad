@@ -57,9 +57,15 @@ export function ConnectionProvider({ children }: { children: ReactNode }) {
     void SecureStore.getItemAsync(SESSION_KEY).then((raw) => {
       if (cancelled || !raw) return;
       try {
-        const parsed = JSON.parse(raw) as SessionInfo;
+        const parsed = JSON.parse(raw) as Partial<SessionInfo>;
         if (parsed.agentUrl && parsed.token) {
-          setSession(parsed);
+          setSession({
+            agentUrl: String(parsed.agentUrl),
+            token: String(parsed.token),
+            workspaceName: String(parsed.workspaceName ?? "Workspace"),
+            root: String(parsed.root ?? ""),
+            providers: Array.isArray(parsed.providers) ? parsed.providers.map(String) : [],
+          });
           setStatus("connected");
         }
       } catch {
