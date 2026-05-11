@@ -1,35 +1,100 @@
 # ForgePad
 
-ForgePad is an original Android-first secure mobile IDE.
+ForgePad is an original Android-first mobile IDE stack.
 
-It is designed as a clean-room implementation:
+Version `0.1.0` now ships with:
 
-- no reused third-party source files
-- no copied branding or assets
-- no dependency on another project's protocol
+- Expo Android client in `app/`
+- desktop agent CLI in `cli/`
+- manager service with 10-minute in-memory session TTL in `manager/`
+- dual-channel WebSocket relay proxy in `proxy/`
+- native PTY daemon protocol in `pty/`
 
-## Workspace layout
+## Architecture
 
-- `app/` Expo mobile client
-- `cli/` desktop agent and provider runtime host
-- `manager/` pairing session service
-- `proxy/` encrypted relay entrypoint
-- `pty/` native PTY helper
+### App
 
-## Principles
+- Android client pairs with desktop through direct LAN Pair URL or manager-issued relay Pair URL
+- session metadata stored locally with secure storage
+- workspace view shows transport mode, providers, project root, and session details
 
-- desktop remains the authority
-- mobile remains a remote client
-- every sensitive action is auditable
-- providers are normalized through one adapter contract
+### CLI
 
-## Near-term milestones
+Run:
 
-1. secure pairing
-2. file system browsing
-3. terminal session transport
-4. git primitives
-5. first AI provider adapter
+```bash
+npx forgepad-agent
+```
+
+Optional relay mode:
+
+```bash
+FORGEPAD_MANAGER_URL=http://127.0.0.1:47320 \
+FORGEPAD_PROXY_URL=ws://127.0.0.1:47322 \
+npx forgepad-agent
+```
+
+CLI prints:
+
+- direct LAN Pair URL
+- relay Pair URL when manager/proxy configured
+- available AI providers
+
+### Manager
+
+Manager is session control plane.
+
+- 10-minute session TTL
+- session registration endpoint
+- claim endpoint at `/pair?code=...`
+- heartbeat endpoint for desktop agent renewal
+
+### Proxy
+
+Proxy is WebSocket relay plane.
+
+- control channel at `/ws/control`
+- data channel at `/ws/data`
+- peer roles: `host` and `mobile`
+- one session can keep both channels open in parallel
+
+### PTY
+
+PTY daemon speaks JSON lines over stdin/stdout.
+
+Supported requests:
+
+- `create`
+- `write`
+- `resize`
+- `kill`
+- `list`
+
+Supported events:
+
+- `ready`
+- `output`
+- `exit`
+- `ack`
+- `error`
+
+## Local Run
+
+Build services:
+
+```bash
+npm run manager:build
+npm run proxy:build
+npm run agent:build
+```
+
+Start services:
+
+```bash
+npm run manager:start
+npm run proxy:start
+npm run agent:start
+```
 
 ## Verify
 
@@ -39,16 +104,10 @@ npm run verify
 
 ## APK
 
-```bash
-npm run app:build:apk
+APK build notes live in `docs/APK_BUILD.md`.
+
+Release artifact path:
+
+```text
+releases/apk/ForgePad-v0.1.0.apk
 ```
-
-APK build details live in `docs/APK_BUILD.md`.
-
-## npm CLI
-
-```bash
-npx forgepad-agent
-```
-
-Publish details live in `docs/NPM_PUBLISH.md`.

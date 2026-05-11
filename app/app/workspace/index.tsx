@@ -95,6 +95,7 @@ export default function WorkspaceScreen() {
 
   const providers = session.providers ?? [];
   const tokenPreview = session.token ? `${session.token.slice(0, 10)}...` : "missing";
+  const transportLabel = session.transport.kind === "relay" ? "Relay" : "Direct LAN";
 
   return (
     <View style={{ flex: 1, backgroundColor: colors.bg.base }}>
@@ -164,6 +165,38 @@ export default function WorkspaceScreen() {
               {session.agentUrl}
             </Text>
           </View>
+
+          <View style={{ gap: spacing[2] }}>
+            <Text style={[styles.metaLabel, { color: colors.fg.subtle, fontFamily: fonts.sans.medium }]}>
+              TRANSPORT
+            </Text>
+            <Text
+              style={{
+                color: colors.fg.default,
+                fontFamily: fonts.mono.regular,
+                fontSize: typography.caption,
+              }}
+            >
+              {transportLabel}
+            </Text>
+          </View>
+
+          {session.transport.sessionId ? (
+            <View style={{ gap: spacing[2] }}>
+              <Text style={[styles.metaLabel, { color: colors.fg.subtle, fontFamily: fonts.sans.medium }]}>
+                RELAY SESSION
+              </Text>
+              <Text
+                style={{
+                  color: colors.fg.default,
+                  fontFamily: fonts.mono.regular,
+                  fontSize: typography.caption,
+                }}
+              >
+                {session.transport.sessionId}
+              </Text>
+            </View>
+          ) : null}
 
           <View style={{ gap: spacing[2] }}>
             <Text style={[styles.metaLabel, { color: colors.fg.subtle, fontFamily: fonts.sans.medium }]}>

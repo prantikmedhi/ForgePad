@@ -7,6 +7,14 @@ type SessionInfo = {
   workspaceName: string;
   root: string;
   providers: string[];
+  transport: {
+    kind: "direct" | "relay";
+    sessionId?: string;
+    proxyBaseUrl?: string;
+    controlUrl?: string;
+    dataUrl?: string;
+    expiresAt?: string | null;
+  };
 };
 
 type ConnectionStatus = "idle" | "connecting" | "connected";
@@ -65,6 +73,16 @@ export function ConnectionProvider({ children }: { children: ReactNode }) {
             workspaceName: String(parsed.workspaceName ?? "Workspace"),
             root: String(parsed.root ?? ""),
             providers: Array.isArray(parsed.providers) ? parsed.providers.map(String) : [],
+            transport: {
+              kind: parsed.transport?.kind === "relay" ? "relay" : "direct",
+              sessionId: typeof parsed.transport?.sessionId === "string" ? parsed.transport.sessionId : undefined,
+              proxyBaseUrl: typeof parsed.transport?.proxyBaseUrl === "string" ? parsed.transport.proxyBaseUrl : undefined,
+              controlUrl: typeof parsed.transport?.controlUrl === "string" ? parsed.transport.controlUrl : undefined,
+              dataUrl: typeof parsed.transport?.dataUrl === "string" ? parsed.transport.dataUrl : undefined,
+              expiresAt: typeof parsed.transport?.expiresAt === "string" || parsed.transport?.expiresAt === null
+                ? parsed.transport.expiresAt
+                : undefined,
+            },
           });
           setStatus("connected");
         }
@@ -98,7 +116,17 @@ export function ConnectionProvider({ children }: { children: ReactNode }) {
         token: String(body.session.token),
         workspaceName: String(body.session.workspaceName ?? "Workspace"),
         root: String(body.session.root ?? ""),
-        providers: Array.isArray(body.session.providers) ? body.session.providers.map(String) : []
+        providers: Array.isArray(body.session.providers) ? body.session.providers.map(String) : [],
+        transport: {
+          kind: body.session.transport?.kind === "relay" ? "relay" : "direct",
+          sessionId: typeof body.session.transport?.sessionId === "string" ? body.session.transport.sessionId : undefined,
+          proxyBaseUrl: typeof body.session.transport?.proxyBaseUrl === "string" ? body.session.transport.proxyBaseUrl : undefined,
+          controlUrl: typeof body.session.transport?.controlUrl === "string" ? body.session.transport.controlUrl : undefined,
+          dataUrl: typeof body.session.transport?.dataUrl === "string" ? body.session.transport.dataUrl : undefined,
+          expiresAt: typeof body.session.transport?.expiresAt === "string" || body.session.transport?.expiresAt === null
+            ? body.session.transport.expiresAt
+            : undefined,
+        },
       };
 
       await SecureStore.setItemAsync(SESSION_KEY, JSON.stringify(nextSession));

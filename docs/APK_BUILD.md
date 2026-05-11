@@ -1,6 +1,6 @@
 # Android APK Build
 
-ForgePad is configured to create an Android APK through EAS.
+ForgePad Android app is configured through Expo.
 
 ## Build
 
@@ -13,9 +13,9 @@ npm --prefix app run build:apk
 
 The build profile is `preview-apk` in `app/eas.json`.
 
-## Put APK In Git
+## Release APK In Git
 
-After EAS finishes, download the `.apk` artifact and place it at:
+Place release APK at:
 
 ```text
 releases/apk/ForgePad-v0.1.0.apk
@@ -32,4 +32,10 @@ A fully local APK build requires:
 - Gradle-compatible JDK
 - signing keystore
 
-This machine currently has Java, but no Android SDK/ADB was detected.
+Current validated release artifact is arm64-only to keep install size reasonable.
+
+Recommended release file:
+
+```text
+releases/apk/ForgePad-v0.1.0.apk
+```

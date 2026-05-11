@@ -5,11 +5,15 @@
   "scripts": {
     "agent:build": "npm --prefix cli run build",
     "agent:start": "npm --prefix cli run start",
+    "manager:build": "npm --prefix manager run build",
+    "manager:start": "npm --prefix manager run start",
+    "proxy:build": "npm --prefix proxy run build",
+    "proxy:start": "npm --prefix proxy run start",
     "app:typecheck": "npm --prefix app run typecheck",
     "app:export:android": "npm --prefix app run export:android",
     "app:build:apk": "npm --prefix app run build:apk",
     "cli:pack": "cd cli && npm pack",
     "cli:publish": "cd cli && npm publish",
-    "verify": "npm --prefix cli run build && npm --prefix app run typecheck && npm --prefix app audit --audit-level=moderate && npm --prefix app run export:android"
+    "verify": "npm --prefix manager run build && npm --prefix proxy run build && npm --prefix cli run build && npm --prefix app run typecheck && npm --prefix app audit --audit-level=moderate && npm --prefix app run export:android"
   }
 }

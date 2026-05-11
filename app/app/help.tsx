@@ -74,7 +74,7 @@ export default function HelpPage() {
         <View style={[styles.list, { marginHorizontal: 12 }]}>
           <FaqItem
             question="How do I connect to a session?"
-            answer="Run `npx forgepad-agent` on your machine, then paste the Pair URL into the app."
+            answer="Run `npx forgepad-agent` on your machine, then paste direct Pair URL or relay Pair URL into the app."
           />
           <FaqItem
             question="What if I get disconnected?"
@@ -88,7 +88,7 @@ export default function HelpPage() {
         <View style={[styles.list, { marginHorizontal: 12 }]}>
           <FaqItem
             question="Why is pairing failing?"
-            answer="Make sure your phone and computer are on the same Wi-Fi and that the desktop agent is still running."
+            answer="For direct mode, keep phone and computer on same Wi-Fi. For relay mode, verify manager and proxy are reachable and the session has not expired."
           />
           <FaqItem
             question="Why do I see network request failed?"
