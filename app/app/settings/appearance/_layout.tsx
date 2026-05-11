@@ -1,7 +1,7 @@
 import { useTheme } from "@/contexts/ThemeContext";
 import { Stack } from "expo-router";
 
-export default function SettingsLayout() {
+export default function AppearanceLayout() {
   const { colors } = useTheme();
 
   return (

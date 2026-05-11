@@ -12,7 +12,7 @@ export default function OnboardingScreen() {
         <Text style={{ color: colors.fg.default, fontFamily: fonts.display, fontSize: 36 }}>
           ForgePad
         </Text>
-        <Text style={{ color: colors.fg.muted, fontFamily: fonts.body, fontSize: 16, lineHeight: 24 }}>
+        <Text style={{ color: colors.fg.muted, fontFamily: fonts.sans.regular, fontSize: 16, lineHeight: 24 }}>
           Your desktop workspace, terminal, git flow, and AI coding agents in one secure mobile IDE.
         </Text>
       </View>
@@ -21,7 +21,7 @@ export default function OnboardingScreen() {
         onPress={() => router.replace("/connect")}
         style={{ backgroundColor: colors.accent.default, borderRadius: 16, paddingVertical: 16, alignItems: "center" }}
       >
-        <Text style={{ color: colors.accent.onAccent, fontFamily: fonts.bodySemiBold, fontSize: 16 }}>
+        <Text style={{ color: colors.accent.onAccent, fontFamily: fonts.sans.semibold, fontSize: 16 }}>
           Start Pairing
         </Text>
       </Pressable>
