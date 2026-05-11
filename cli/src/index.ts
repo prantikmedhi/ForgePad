@@ -34,16 +34,30 @@ Options:
 `);
 }
 
-function getLanAddress() {
+function isPrivateIpv4(address: string) {
+  return address.startsWith("10.")
+    || address.startsWith("192.168.")
+    || /^172\.(1[6-9]|2\d|3[0-1])\./.test(address);
+}
+
+function getLanAddresses() {
   const nets = networkInterfaces();
+  const addresses: string[] = [];
+
   for (const entries of Object.values(nets)) {
     for (const entry of entries ?? []) {
       if (entry.family === "IPv4" && !entry.internal) {
-        return entry.address;
+        addresses.push(entry.address);
       }
     }
   }
-  return "127.0.0.1";
+
+  return addresses;
+}
+
+function getPreferredLanAddress(addresses: string[]) {
+  const privateAddress = addresses.find(isPrivateIpv4);
+  return privateAddress ?? addresses[0] ?? "127.0.0.1";
 }
 
 function safeEqual(a: string, b: string) {
@@ -76,7 +90,8 @@ async function main() {
   const pairingCode = `forge-${randomUUID().slice(0, 8)}`;
   const sessionToken = randomBytes(32).toString("base64url");
   const workspaceName = process.cwd().split(/[\\/]/).pop() || "Workspace";
-  const host = getLanAddress();
+  const addresses = getLanAddresses();
+  const host = getPreferredLanAddress(addresses);
 
   const server = createServer((req, res) => {
     if (!req.url) {
@@ -94,7 +109,10 @@ async function main() {
     if (req.method === "GET" && url.pathname === "/pair") {
       const code = url.searchParams.get("code") ?? "";
       if (!safeEqual(code, pairingCode)) {
-        sendJson(res, 401, { ok: false, error: "Invalid pairing code" });
+        sendJson(res, 401, {
+          ok: false,
+          error: "Invalid pairing code. Use the exact Pair URL from the currently running CLI session."
+        });
         return;
       }
 
@@ -121,6 +139,13 @@ async function main() {
   console.log(`Workspace: ${process.cwd()}`);
   console.log(`Pairing code: ${pairingCode}`);
   console.log(`Pair URL: http://${host}:${DEFAULT_PORT}/pair?code=${pairingCode}`);
+  if (addresses.length > 1) {
+    console.log("Alternate Pair URLs:");
+    for (const address of addresses) {
+      if (address === host) continue;
+      console.log(`  http://${address}:${DEFAULT_PORT}/pair?code=${pairingCode}`);
+    }
+  }
   console.log(`Available providers: ${ai.availableBackends().join(", ") || "none"}`);
   console.log("Keep this terminal open while using the mobile app.");
 }
